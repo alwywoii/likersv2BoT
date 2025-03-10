@@ -2,7 +2,7 @@ name: Run Bot 24/7
 
 on:
   schedule:
-    - cron: "*/59 * * * *"  # Restart setiap 59 menit
+    - cron: "*/59 * * * *"  # Restart setiap 59 menit agar tetap berjalan
   workflow_dispatch:       # Bisa dijalankan manual
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'  # Update ke Node.js versi terbaru
 
       - name: Debug File & Path
         run: |
@@ -33,5 +33,5 @@ jobs:
         run: |
           echo "🚀 Menjalankan bot..."
           nohup node index.js &  
-          sleep 3540
+          sleep 3540  # Bot akan berjalan selama 59 menit sebelum restart
           echo "✅ Bot selesai berjalan."
