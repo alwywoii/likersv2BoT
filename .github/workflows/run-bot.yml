@@ -1,0 +1,28 @@
+name: Run Bot 24/7
+
+on:
+  schedule:
+    - cron: "*/59 * * * *"  # Restart setiap 59 menit
+  workflow_dispatch:       # Bisa dijalankan manual
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Ganti sesuai kebutuhan
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Jalankan Bot atau Server
+        run: |
+          echo "Menjalankan bot..."
+          nohup node index.js &  # Sesuaikan dengan file bot kamu
+          sleep 3540  # Tunggu 59 menit sebelum restart
