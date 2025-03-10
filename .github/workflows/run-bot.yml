@@ -17,11 +17,21 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Debug File & Path
+        run: |
+          echo "📂 Cek isi repository:"
+          ls -la
+          echo "✅ File yang tersedia telah dicek."
+
       - name: Install Dependencies
-        run: npm install
+        run: |
+          echo "📦 Memulai instalasi dependencies..."
+          npm install
+          echo "✅ Instalasi dependencies selesai."
 
       - name: Jalankan Bot atau Server
         run: |
-          echo "Menjalankan bot..."
+          echo "🚀 Menjalankan bot..."
           nohup node index.js &  
           sleep 3540
+          echo "✅ Bot selesai berjalan."
