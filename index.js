@@ -111,28 +111,6 @@ async function connectToWhatsApp() {
         });
        global.db = connectDB(); // Reconnect database
        
-       const { exec } = require("child_process");
-
-// Fungsi untuk menangani Stalker Free Fire
-async function handleStalkFF(sock, sender, text) {
-    const userId = text.split(" ")[1];
-    if (!userId) {
-        await sock.sendMessage(sender, { text: "⚠️ Masukkan User ID FF!\nContoh: !stalkff 671022112" });
-        return;
-    }
-
-    // Jalankan ff.js dengan User ID sebagai argumen
-    exec(`node ff.js ${userId}`, async (error, stdout, stderr) => {
-        if (error) {
-            await sock.sendMessage(sender, { text: "❌ Gagal menjalankan stalker FF." });
-            console.error(error);
-            return;
-        }
-
-        // Kirim hasil dari ff.js ke WhatsApp
-        await sock.sendMessage(sender, { text: stdout });
-    });
-}
        
 // Fungsi validasi URL
 function isValidURL(str) {
@@ -194,6 +172,29 @@ function generateFakeIP() {
 }
 
 // Jalankan bot
+const { exec } = require("child_process");
+
+// Fungsi untuk menangani Stalker Free Fire
+async function handleStalkFF(sock, sender, text) {
+    const userId = text.split(" ")[1];
+    if (!userId) {
+        await sock.sendMessage(sender, { text: "⚠️ Masukkan User ID FF!\nContoh: !stalkff 671022112" });
+        return;
+    }
+
+    // Jalankan ff.js dengan User ID sebagai argumen
+    exec(`node ff.js ${userId}`, async (error, stdout, stderr) => {
+        if (error) {
+            await sock.sendMessage(sender, { text: "❌ Gagal menjalankan stalker FF." });
+            console.error(error);
+            return;
+        }
+
+        // Kirim hasil dari ff.js ke WhatsApp
+        await sock.sendMessage(sender, { text: stdout });
+    });
+}
+
 sock.ev.on("messages.upsert", async ({ messages }) => {
     const msg = messages[0];
     if (!msg.message || msg.key.fromMe) return;
