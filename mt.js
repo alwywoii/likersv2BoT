@@ -26,7 +26,7 @@ async function connectToWhatsApp() {
             if (!msg.message || msg.key.fromMe) return;
 
             const sender = msg.key.remoteJid;
-            await sock.sendMessage(sender, { text: "⚠️BOT SEDANG UPDATE!⚠️\nSilahkan coba lagi nanti.." });
+            await sock.sendMessage(sender, { text: "⚠️BOT MAINTENANCE!⚠️\\n\n*_Dikarenakan banyak yang akses bot menjadi down._*\n\nMohon ditunggu sebentar ya..🙏" });
         });
 
     } catch (error) {
