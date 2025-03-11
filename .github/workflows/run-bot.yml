@@ -11,11 +11,13 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false  # Hindari masalah otorisasi GitHub Actions
 
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'  # Update ke Node.js versi terbaru
+          node-version: '20'  # Gunakan versi terbaru
 
       - name: Debug File & Path
         run: |
@@ -27,11 +29,15 @@ jobs:
         run: |
           echo "📦 Memulai instalasi dependencies..."
           npm install
+          npm install -g pm2  # Install pm2 untuk menjaga bot tetap berjalan
           echo "✅ Instalasi dependencies selesai."
 
       - name: Jalankan Bot atau Server
         run: |
-          echo "🚀 Menjalankan index.js dan ff.js..."
-          nohup node index.js & 
-          sleep 3540  # Bot akan berjalan selama 59 menit sebelum restart
-          echo "✅ Bot selesai berjalan."
+          echo "🚀 Menjalankan index.js dengan pm2..."
+          pm2 start index.js --name bot
+          pm2 save
+          echo "✅ Bot berjalan dengan pm2."
+
+      - name: Simpan Status PM2
+        run: pm2 list
