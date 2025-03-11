@@ -1,6 +1,8 @@
 require("dotenv").config();
 const { default: makeWASocket, useMultiFileAuthState } = require("@whiskeysockets/baileys");
 
+let lastMessageId = null; // Variabel untuk menyimpan ID pesan terakhir
+
 async function connectToWhatsApp() {
     console.log("Bot sedang konek ke WhatsApp...");
 
@@ -16,7 +18,7 @@ async function connectToWhatsApp() {
         sock.ev.on("connection.update", (update) => {
             const { connection } = update;
             if (connection === "close") {
-                console.warn("тЪая╕П Koneksi WhatsApp terputus, mencoba koneksi ulang...");
+                console.warn("Koneksi WhatsApp terputus, mencoba koneksi ulang...");
                 setTimeout(connectToWhatsApp, 0);
             }
         });
@@ -26,11 +28,22 @@ async function connectToWhatsApp() {
             if (!msg.message || msg.key.fromMe) return;
 
             const sender = msg.key.remoteJid;
-            await sock.sendMessage(sender, { text: "⚠️BOT MAINTENANCE!⚠️\\n\n*_Dikarenakan banyak yang akses bot menjadi down._*\n\nMohon ditunggu sebentar ya..🙏" });
+            const messageId = msg.key.id; // Ambil ID pesan
+
+            if (lastMessageId === messageId) {
+                console.log("Pesan sudah dikirim, menghindari duplikasi...");
+                return;
+            }
+
+            lastMessageId = messageId; // Simpan ID pesan terakhir yang diproses
+
+            await sock.sendMessage(sender, { 
+                text: "⚠️BOT MAINTENANCE!⚠️\n\n*_Dikarenakan banyak yang akses bot menjadi down._*\n\nMohon ditunggu sebentar ya..🙏" 
+            });
         });
 
     } catch (error) {
-        console.error("тЭМ Fatal Error:", error.message);
+        console.error("Fatal Error:", error.message);
     }
 }
 
