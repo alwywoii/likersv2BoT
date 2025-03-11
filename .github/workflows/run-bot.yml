@@ -2,7 +2,7 @@ name: Run Bot 24/7
 
 on:
   schedule:
-    - cron: "*/59 * * * *"  # Restart setiap 59 menit agar tetap berjalan
+    - cron: "0 */3 * * *"  # Restart otomatis setiap 3 jam
   workflow_dispatch:       # Bisa dijalankan manual
 
 jobs:
@@ -29,15 +29,10 @@ jobs:
         run: |
           echo "📦 Memulai instalasi dependencies..."
           npm install
-          npm install -g pm2  # Install pm2 untuk menjaga bot tetap berjalan
           echo "✅ Instalasi dependencies selesai."
 
-      - name: Jalankan Bot atau Server
+      - name: Jalankan Bot
         run: |
-          echo "🚀 Menjalankan index.js dengan pm2..."
-          pm2 start index.js --name bot
-          pm2 save
-          echo "✅ Bot berjalan dengan pm2."
-
-      - name: Simpan Status PM2
-        run: pm2 list
+          echo "🚀 Menjalankan index.js..."
+          nohup node index.js > output.log 2>&1 &  # Jalankan di background
+          tail -f output.log  # Menampilkan log agar tidak dianggap idle
