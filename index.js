@@ -22,44 +22,11 @@ function getRandomAPIKey() {
 }
 
 // Daftar layanan
-const { exec } = require("child_process");
-
-// Daftar layanan
 const SERVICES = {
     1: { name: "LIKE INSTAGRAM (10 LIKES)", service: "11288", jumlah: "10" },
     2: { name: "VIEWS TIKTOK (100 VIEWS)", service: "11285", jumlah: "100" },
-    3: { name: "LIKE YOUTUBE (100 LIKES)", service: "16472", jumlah: "100" },
-    4: { name: "STALKER FREE FIRE", service: "ff" } // Tambah layanan ke-4
+    3: { name: "LIKE YOUTUBE (100 LIKES)", service: "16472", jumlah: "100" }
 };
-
-// Fungsi menangani pilihan user
-async function handleUserChoice(sock, sender, choice) {
-    if (!SERVICES[choice]) {
-        await sock.sendMessage(sender, { text: "❌ Pilihan tidak valid!" });
-        return;
-    }
-
-    const service = SERVICES[choice];
-
-    if (choice === 4) { // Jika user pilih nomor 4 (STALKER FREE FIRE)
-        await sock.sendMessage(sender, { text: "🔍 Menjalankan Stalker Free Fire..." });
-
-        // Jalankan ff.js
-        exec("node ff.js", (error, stdout, stderr) => {
-            if (error) {
-                console.error(`❌ Error: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.error(`⚠️ Stderr: ${stderr}`);
-                return;
-            }
-            console.log(`✅ Output: ${stdout}`);
-        });
-    } else {
-        await sock.sendMessage(sender, { text: `✅ Anda memilih ${service.name}` });
-    }
-}
  
 // Simpan status pengguna
 const userSelections = {};
