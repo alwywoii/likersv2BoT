@@ -6,7 +6,14 @@ const { Client } = require("pg");
 // Daftar API Key
 const API_KEYS = [
     "QA0xv-6c5EP-WJVKN-zRLLT-aunZK",
-    "RSSaO-HGvRt-kKE5f-e3msn-rNNb6"
+    "RSSaO-HGvRt-kKE5f-e3msn-rNNb6",
+    "qBMzf-Rm5Qe-kBTig-o4PDh-klx2X",
+    "wjP17-xmFPY-hIwvH-YqC05-h0doN",
+    "ogOm2-th6CI-bIDgz-xyqNj-VKMgS",
+    "FOTrA-G9Rtv-miwjG-oJmRH-mqfsN",
+    "PMXy3-YuWQI-x7XBF-f0DB6-XmpZn",
+    "WXuSD-545YE-tKkBD-1PI7P-mzOVi",
+    "NHxjp-AZZnd-LGC4q-kkjqB-Hrqqh"
 ];
 
 // Fungsi untuk mendapatkan API key secara acak
