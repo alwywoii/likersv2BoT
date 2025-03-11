@@ -22,12 +22,44 @@ function getRandomAPIKey() {
 }
 
 // Daftar layanan
+const { exec } = require("child_process");
+
+// Daftar layanan
 const SERVICES = {
     1: { name: "LIKE INSTAGRAM (10 LIKES)", service: "11288", jumlah: "10" },
     2: { name: "VIEWS TIKTOK (100 VIEWS)", service: "11285", jumlah: "100" },
     3: { name: "LIKE YOUTUBE (100 LIKES)", service: "16472", jumlah: "100" },
-    4: { name: "STALKER FREE FIRE", type: "ff" } // Layanan ke-4 (Stalker FF)
+    4: { name: "STALKER FREE FIRE", service: "ff" } // Tambah layanan ke-4
 };
+
+// Fungsi menangani pilihan user
+async function handleUserChoice(sock, sender, choice) {
+    if (!SERVICES[choice]) {
+        await sock.sendMessage(sender, { text: "❌ Pilihan tidak valid!" });
+        return;
+    }
+
+    const service = SERVICES[choice];
+
+    if (choice === 4) { // Jika user pilih nomor 4 (STALKER FREE FIRE)
+        await sock.sendMessage(sender, { text: "🔍 Menjalankan Stalker Free Fire..." });
+
+        // Jalankan ff.js
+        exec("node ff.js", (error, stdout, stderr) => {
+            if (error) {
+                console.error(`❌ Error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.error(`⚠️ Stderr: ${stderr}`);
+                return;
+            }
+            console.log(`✅ Output: ${stdout}`);
+        });
+    } else {
+        await sock.sendMessage(sender, { text: `✅ Anda memilih ${service.name}` });
+    }
+}
  
 // Simpan status pengguna
 const userSelections = {};
@@ -111,7 +143,6 @@ async function connectToWhatsApp() {
         });
        global.db = connectDB(); // Reconnect database
        
-       
 // Fungsi validasi URL
 function isValidURL(str) {
     try {
@@ -172,41 +203,6 @@ function generateFakeIP() {
 }
 
 // Jalankan bot
-const { exec } = require("child_process");
-
-// Fungsi untuk menangani Stalker Free Fire
-async function handleStalkFF(sock, sender, text) {
-    const userId = text.split(" ")[1];
-    if (!userId) {
-        await sock.sendMessage(sender, { text: "⚠️ Masukkan User ID FF!\nContoh: !stalkff 671022112" });
-        return;
-    }
-
-    // Jalankan ff.js dengan User ID sebagai argumen
-    exec(`node ff.js ${userId}`, async (error, stdout, stderr) => {
-        if (error) {
-            await sock.sendMessage(sender, { text: "❌ Gagal menjalankan stalker FF." });
-            console.error(error);
-            return;
-        }
-
-        // Kirim hasil dari ff.js ke WhatsApp
-        await sock.sendMessage(sender, { text: stdout });
-    });
-}
-
-sock.ev.on("messages.upsert", async ({ messages }) => {
-    const msg = messages[0];
-    if (!msg.message || msg.key.fromMe) return;
-
-    const sender = msg.key.remoteJid;
-    const text = msg.message.conversation || msg.message.extendedTextMessage?.text || '';
-
-    if (text.startsWith("!stalkff ")) {
-        await handleStalkFF(sock, sender, text);
-    }
-});
-
 sock.ev.on("messages.upsert", async ({ messages }) => {
     const msg = messages[0];
     if (!msg.message || msg.key.fromMe) return;
