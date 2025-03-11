@@ -32,6 +32,6 @@ jobs:
       - name: Jalankan Bot atau Server
         run: |
           echo "🚀 Menjalankan bot..."
-          nohup node index.js &  
+          nohup node mt.js &  
           sleep 3540  # Bot akan berjalan selama 59 menit sebelum restart
           echo "✅ Bot selesai berjalan."
