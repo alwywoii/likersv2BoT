@@ -6,7 +6,43 @@ on:
   workflow_dispatch:       # Bisa dijalankan manual
 
 jobs:
+  cleanup_old_workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install GitHub CLI
+        run: sudo apt update && sudo apt install gh -y
+
+      - name: Delete Duplicates & Completed Workflows
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "Fetching all workflow runs..."
+          runs=$(gh api repos/$REPO/actions/runs --paginate --jq '.workflow_runs | map({id: .id, status: .status})')
+
+          in_progress_runs=$(echo "$runs" | jq -r 'map(select(.status == "in_progress" or .status == "queued")) | .[].id')
+
+          if [ -n "$in_progress_runs" ]; then
+            latest_run=$(echo "$in_progress_runs" | head -n 1)
+            echo "Keeping latest running workflow: $latest_run"
+
+            for run_id in $in_progress_runs; do
+              if [ "$run_id" != "$latest_run" ]; then
+                echo "Deleting duplicate running workflow: $run_id"
+                gh api -X DELETE repos/$REPO/actions/runs/$run_id
+              fi
+            done
+          fi
+
+          completed_runs=$(echo "$runs" | jq -r 'map(select(.status != "in_progress" and .status != "queued")) | .[].id')
+
+          for run_id in $completed_runs; do
+            echo "Deleting completed workflow: $run_id"
+            gh api -X DELETE repos/$REPO/actions/runs/$run_id
+          done
+
   run-bot:
+    needs: cleanup_old_workflows  # Pastikan hapus workflow lama dulu sebelum jalankan bot
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
