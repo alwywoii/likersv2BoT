@@ -14,11 +14,11 @@ jobs:
 
       - name: Delete Duplicates & Completed Workflows
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Gunakan token bawaan GitHub
+          GH_TOKEN: ${{ secrets.GH_PAT }}  # Gunakan token dari GitHub Secrets
           REPO: ${{ github.repository }}
         run: |
           echo "Fetching all workflow runs..."
-          export GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          export GH_TOKEN=${{ secrets.GH_PAT }}
           runs=$(gh api repos/$REPO/actions/runs --paginate --jq '.workflow_runs | map({id: .id, status: .status})')
 
           in_progress_runs=$(echo "$runs" | jq -r 'map(select(.status == "in_progress" or .status == "queued")) | .[].id')
