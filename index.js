@@ -84,7 +84,7 @@ async function sendServiceList(sock, sender) {
 - _3️⃣ LIKE YOUTUBE (100 LIKES)_\n\n
 > _Layanan Full GRATIS!!_
 > _Bisa Digunakan Berulang kali_\n
-*Ketik angka untuk memilih tools!*\n`});
+*Ketik angka untuk memilih tools!*`});
     userSelections[sender] = { step: "choose_service" };
 }
 
@@ -194,7 +194,7 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
     if (text.toLowerCase() === "y") {
         userSelections[sender].step = "choose_quantity";
         await sock.sendMessage(sender, { 
-            text: `*Mau order ${SERVICES[userSelections[sender].serviceKey].name} berapa?*\n\nCukup ketik pakai angka saja\n> Max Order 25`
+            text: `*Mau order ${SERVICES[userSelections[sender].serviceKey].name} berapa?*\n\nCukup ketik pakai angka saja\n> Max Order 25\n> *CONTOH NIH:* _order 1 like IG = 10 likes, jika order max 25 tinggal kalikan 25×10 = 250 likes_ `
         });
         return;
     } else if (text.toLowerCase() === "n") {
@@ -212,7 +212,7 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
         }
 
         userSelections[sender] = { step: "choose_quantity", serviceKey };
-        await sock.sendMessage(sender, { text: `*Mau order ${SERVICES[serviceKey].name} berapa?*\n\nCukup ketik pakai angka saja\n> Max Order 25` });
+        await sock.sendMessage(sender, { text: `*Mau order ${SERVICES[serviceKey].name} berapa?*\n\nCukup ketik pakai angka saja\n> Max Order 25\n> *CONTOH NIH:* _order 1 like IG = 10 likes, jika order max 25 tinggal kalikan 25×10 = 250 likes_` });
         return;
     }
 
@@ -293,12 +293,12 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
     if (successCount > 0) {
     // Jika ada yang berhasil, gunakan notifikasi utama
     await sock.sendMessage(sender, {
-        text: `             *=== STATUS ORDER ===*\n\n✅ Order Berhasil: *${successCount}*\n❌ Order Gagal: *${failCount}*\n> _Estimasi proses pengiriman max 24 jam, yang pasti no komplain🗿_\n\n> *Mau order lagi?*\n> Ketik *Y* ( untuk order lagi )\n> Ketik *N* ( kembali ke daftar layanan )\n*_Support Me Guys. Donate Seiklhasnya 🙏🏻_*\n*_Link QRIS: qris-likerv2.vercel.app_*`
+        text: `             *==== 🔰STATUS ORDER🔰 ====*\n\n*Layanan: ${SERVICES[serviceKey].name}*\n✅ Order Berhasil: *${successCount}*\n❌ Order Gagal: *${failCount}*\n> _Estimasi proses pengiriman max 24 jam, yang pasti no komplain🗿_\n\n> *Mau order lagi?*\n> Ketik *Y* ( untuk order lagi )\n> Ketik *N* ( kembali ke daftar layanan )\n*_Hubungi Admin Jika ada Kenadala._*\n*_Telegram Admin: @Messi_NFT_*`
     });
 } else {
     // Jika semua order gagal, gunakan notifikasi berbeda
     await sock.sendMessage(sender, {
-        text: `❌ *Semua order gagal!* ❌\n\n🚨 Sepertinya ada masalah dengan sistem atau layanan sedang down.\n\nSilakan coba lagi nanti atau hubungi admin jika masalah berlanjut.\n\n*Ketik N untuk kembali ke daftar layanan.*`
+        text: `*⚠️ LAYANAN MAINTENANCE⚠️*\n\n*_Layanan untuk ${SERVICES[serviceKey].name} Sedang Tidak Aktif, Silahkan Gunakan Layanan Lainya.._*\n\n*KETIK _N_ UNTUK KEMBALI KE LAYANAN!`
     });
 }
 
