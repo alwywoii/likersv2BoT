@@ -78,13 +78,13 @@ setInterval(attemptReconnect, 30000);
 async function sendServiceList(sock, sender) {
     await sock.sendMessage(sender, { text: `     
         *----- 🄲🄰🅃🅉🄱🄾🅃 -----*\n
-*Pilih Tools GRATIS! dibawah ini:*\n
+*List Layanan:*\n
 - _1️⃣ LIKE INSTAGRAM (10 LIKES)_
 - _2️⃣ VIEWS TIKTOK (100 VIEWS)_
 - _3️⃣ LIKE YOUTUBE (100 LIKES)_\n\n
-> _Layanan Full GRATIS!!_
+> _100% GRATIS!!_
 > _Bisa Digunakan Berulang kali_\n
-*Ketik angka untuk memilih tools!*`});
+*Pilih layanan dengan mengtik angka saja!*`});
     userSelections[sender] = { step: "choose_service" };
 }
 
@@ -194,7 +194,7 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
     if (text.toLowerCase() === "y") {
         userSelections[sender].step = "choose_quantity";
         await sock.sendMessage(sender, { 
-            text: `*Mau order ${SERVICES[userSelections[sender].serviceKey].name} berapa?*\n\nCukup ketik pakai angka saja\n> *Max Order 25*\n\n> *CONTOH NIH:* _order 1 like IG = 10 likes, jika order max 25 tinggal kalikan 25×10 = 250 likes_ `
+            text: `*Mau order berapa?*\n*( KETIK ANGKA SAJA )*\n> *Max Order 25*\n\n> *CONTOH NIH:* _order 1 like IG = 10 likes, jika order max 25 tinggal kalikan 25×10 = 250 likes_ `
         });
         return;
     } else if (text.toLowerCase() === "n") {
@@ -224,7 +224,7 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
         }
 
         if (quantity > 25) {
-            await sock.sendMessage(sender, { text: "*maksimal order cuma 25 woii😒*" });
+            await sock.sendMessage(sender, { text: "*maksimal order cuma 25😒*" });
             return;
         }
 
