@@ -194,7 +194,7 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
     if (text.toLowerCase() === "y") {
         userSelections[sender].step = "choose_quantity";
         await sock.sendMessage(sender, { 
-            text: `*Mau order ${SERVICES[userSelections[sender].serviceKey].name} berapa?*\n\nCukup ketik pakai angka saja\n> Max Order 25\n> *CONTOH NIH:* _order 1 like IG = 10 likes, jika order max 25 tinggal kalikan 25×10 = 250 likes_ `
+            text: `*Mau order ${SERVICES[userSelections[sender].serviceKey].name} berapa?*\n\nCukup ketik pakai angka saja\n> *Max Order 25*\n\n> *CONTOH NIH:* _order 1 like IG = 10 likes, jika order max 25 tinggal kalikan 25×10 = 250 likes_ `
         });
         return;
     } else if (text.toLowerCase() === "n") {
@@ -212,7 +212,7 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
         }
 
         userSelections[sender] = { step: "choose_quantity", serviceKey };
-        await sock.sendMessage(sender, { text: `*Mau order ${SERVICES[serviceKey].name} berapa?*\n\nCukup ketik pakai angka saja\n> Max Order 25\n> *CONTOH NIH:* _order 1 like IG = 10 likes, jika order max 25 tinggal kalikan 25×10 = 250 likes_` });
+        await sock.sendMessage(sender, { text: `*Mau order ${SERVICES[serviceKey].name} berapa?*\n\nCukup ketik pakai angka saja\n> *Max Order 25*\n\n> *CONTOH NIH:* _order 1 like IG = 10 likes, jika order max 25 tinggal kalikan 25×10 = 250 likes_` });
         return;
     }
 
@@ -293,7 +293,7 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
     if (successCount > 0) {
     // Jika ada yang berhasil, gunakan notifikasi utama
     await sock.sendMessage(sender, {
-        text: `             *==== 🔰STATUS ORDER🔰 ====*\n\n*Layanan: ${SERVICES[serviceKey].name}*\n✅ Order Berhasil: *${successCount}*\n❌ Order Gagal: *${failCount}*\n> _Estimasi proses pengiriman max 24 jam, yang pasti no komplain🗿_\n\n> *Mau order lagi?*\n> Ketik *Y* ( untuk order lagi )\n> Ketik *N* ( kembali ke daftar layanan )\n*_Hubungi Admin Jika ada Kenadala._*\n*_Telegram Admin: @Messi_NFT_*`
+    text: `「🔰STATUS ORDER🔰」\n\n*Layanan: ${SERVICES[serviceKey].name}*\n✅ Order Berhasil: *${successCount}*\n❌ Order Gagal: *${failCount}*\n> _Estimasi proses pengiriman max 24 jam, yang pasti no komplain🗿_\n\n> *Mau order lagi?*\n> Ketik *Y* ( untuk order lagi )\n> Ketik *N* ( kembali ke daftar layanan )\n*_Hubungi Admin Jika ada Kenadala._*\n*_Telegram Admin: @Messi_NFT_*`
     });
 } else {
     // Jika semua order gagal, gunakan notifikasi berbeda
