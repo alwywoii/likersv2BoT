@@ -77,7 +77,7 @@ setInterval(attemptReconnect, 30000);
 // Fungsi mengirim daftar layanan
 async function sendServiceList(sock, sender) {
     await sock.sendMessage(sender, { text: `     
-        *----- 🄲🄰🅃🅉🄱🄾🅃 -----*\n
+         *----- 🄲🄰🅃🅉🄱🄾🅃 -----*\n
 *List Layanan:*\n
 - _1️⃣ LIKE INSTAGRAM (10 LIKES)_
 - _2️⃣ VIEWS TIKTOK (100 VIEWS)_
@@ -212,7 +212,7 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
         }
 
         userSelections[sender] = { step: "choose_quantity", serviceKey };
-        await sock.sendMessage(sender, { text: `*Mau order ${SERVICES[serviceKey].name} berapa?*\n\nCukup ketik pakai angka saja\n> *Max Order 25*\n\n> *CONTOH NIH:* _order 1 like IG = 10 likes, jika order max 25 tinggal kalikan 25×10 = 250 likes_` });
+        await sock.sendMessage(sender, { text: `*Mau order berapa?*\n*( KETIK ANGKA SAJA )*\n> *Max Order 25*\n\n> *CONTOH NIH:* _order 1 like IG = 10 likes, jika order max 25 tinggal kalikan 25×10 = 250 likes_ ` });
         return;
     }
 
