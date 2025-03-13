@@ -2,6 +2,7 @@ require("dotenv").config();
 const { default: makeWASocket, useMultiFileAuthState } = require("@whiskeysockets/baileys");
 const axios = require("axios");
 const { Client } = require("pg");
+const { stalkFreeFire } = require("./ff"); // Import stalkFreeFire dari ff.js
 
 // Daftar API Key
 const API_KEYS = [
@@ -25,7 +26,8 @@ function getRandomAPIKey() {
 const SERVICES = {
     1: { name: "LIKE INSTAGRAM (10 LIKES)", service: "11288", jumlah: "10" },
     2: { name: "VIEWS TIKTOK (100 VIEWS)", service: "11285", jumlah: "100" },
-    3: { name: "LIKE YOUTUBE (100 LIKES)", service: "16472", jumlah: "100" }
+    3: { name: "LIKE YOUTUBE (100 LIKES)", service: "16472", jumlah: "100" },
+    10: { name: "StalkFF"}
 };
  
 // Simpan status pengguna
@@ -82,6 +84,8 @@ async function sendServiceList(sock, sender) {
 - _1️⃣ LIKE INSTAGRAM (10 LIKES)_
 - _2️⃣ VIEWS TIKTOK (100 VIEWS)_
 - _3️⃣ LIKE YOUTUBE (100 LIKES)_\n\n
+*STALKER:*\n
+- *🔟 CEK ID FREE FIRE ( LENGKAP! )*\n\n
 > _100% GRATIS!!_
 > _Bisa Digunakan Berulang kali_\n
 *Pilih layanan dengan mengtik angka saja!*`});
@@ -204,17 +208,59 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
     }
 }
 
-    if (userSelections[sender]?.step === "choose_service") {
-        const serviceKey = parseInt(text);
-        if (isNaN(serviceKey) || !SERVICES[serviceKey]) {
-            await sock.sendMessage(sender, { text: "*Pilih yang benar kocakk😭🗿🗿*" });
-            return;
-        }
-
-        userSelections[sender] = { step: "choose_quantity", serviceKey };
-        await sock.sendMessage(sender, { text: `*Mau order berapa?*\n*( KETIK ANGKA SAJA )*\n> *Max Order 25*\n\n> *CONTOH NIH:* _order 1 like IG = 10 likes, jika order max 25 tinggal kalikan 25×10 = 250 likes_ ` });
+if (userSelections[sender]?.step === "choose_service") {
+    const serviceKey = parseInt(text);
+    if (isNaN(serviceKey) || !SERVICES[serviceKey]) {
+        await sock.sendMessage(sender, { text: "*Pilih yang benar kocakk😭🗿🗿*" });
         return;
     }
+
+    userSelections[sender] = { step: "choose_quantity", serviceKey };
+
+    if (serviceKey === 10) {
+        await sock.sendMessage(sender, { text: "*ID FREE FIRE?*" });
+    } else if (serviceKey === 5) {
+        await sock.sendMessage(sender, { text: "layanan 5 kosong" });
+    } else if (serviceKey === 6) {
+        await sock.sendMessage(sender, { text: "layanan 6 kosong" });
+    } else {
+        await sock.sendMessage(sender, { text: `*Mau order berapa?*\n*( KETIK ANGKA SAJA )*\n> *Max Order 25*\n\n> *CONTOH:* _order 1 like IG = 10 likes, jika order max 25 tinggal kalikan 25×10 = 250 likes_` });
+    }
+    return;
+}
+
+// Jika pengguna memilih layanan 4 dan memasukkan ID Free Fire
+if (userSelections[sender]?.step === "choose_quantity") {
+    if (userSelections[sender].serviceKey === 10) {
+        if (isNaN(text)) {
+            await sock.sendMessage(sender, { text: "*ID FREE FIRE WOII BUKAN USERNAME*" });
+            return;
+        }
+        await stalkFreeFire(sock, sender, text); // Panggil fungsi dari ff.js
+        delete userSelections[sender];
+        return;
+    }
+
+    if (userSelections[sender].serviceKey === 5) {
+        if (isNaN(text)) {
+            await sock.sendMessage(sender, { text: "LAYANAN 5 KOSONG! Kembali ketik N" });
+            return;
+        }
+       await stalkFreeFire(sock, sender, text); // Panggil fungsi dari ff.js
+        delete userSelections[sender];
+        return;
+    }
+    
+        if (userSelections[sender].serviceKey === 6) {
+        if (isNaN(text)) {
+            await sock.sendMessage(sender, { text: "LAYANAN 5 KOSONG! Kembali ketik N" });
+            return;
+        }
+       await stalkFreeFire(sock, sender, text); // Panggil fungsi dari ff.js
+        delete userSelections[sender];
+        return;
+    }
+}
 
     if (userSelections[sender]?.step === "choose_quantity") {
         const quantity = parseInt(text);
@@ -345,3 +391,4 @@ function generateRandomIGSH() {
 
 // Jalankan bot
 connectToWhatsApp();
+                                                                                               
