@@ -2,7 +2,8 @@ require("dotenv").config();
 const { default: makeWASocket, useMultiFileAuthState } = require("@whiskeysockets/baileys");
 const axios = require("axios");
 const { Client } = require("pg");
-const { stalkFreeFire } = require("./ff"); // Import stalkFreeFire dari ff.js
+const { stalkFreeFire } = require("./ff");
+const { stalkTiktok } = require("./tt");
 
 // Daftar API Key
 const API_KEYS = [
@@ -27,7 +28,8 @@ const SERVICES = {
     1: { name: "LIKE INSTAGRAM (10 LIKES)", service: "11288", jumlah: "10" },
     2: { name: "VIEWS TIKTOK (100 VIEWS)", service: "11285", jumlah: "100" },
     3: { name: "LIKE YOUTUBE (100 LIKES)", service: "16472", jumlah: "100" },
-    10: { name: "StalkFF"}
+    10: { name: "StalkTT"},
+    11: { name: "StalkFF"}
 };
  
 // Simpan status pengguna
@@ -81,11 +83,12 @@ async function sendServiceList(sock, sender) {
     await sock.sendMessage(sender, { text: `     
          *----- 🄲🄰🅃🅉🄱🄾🅃 -----*\n
 *List Layanan:*\n
-- _1️⃣ LIKE INSTAGRAM (10 LIKES)_
-- _2️⃣ VIEWS TIKTOK (100 VIEWS)_
-- _3️⃣ LIKE YOUTUBE (100 LIKES)_\n\n
+- *_1. LIKE INSTAGRAM (10 LIKES)_*
+- *_2. VIEWS TIKTOK (100 VIEWS)_*
+- *_3. LIKE YOUTUBE (100 LIKES)_*\n\n
 *STALKER:*\n
-- *🔟 CEK ID FREE FIRE ( LENGKAP! )*\n\n
+- *10. STALK TIKTOK*
+- *11. CEK ID FREE FIRE ( LENGKAP! )*\n\n
 > _100% GRATIS!!_
 > _Bisa Digunakan Berulang kali_\n
 *Pilih layanan dengan mengtik angka saja!*`});
@@ -218,9 +221,9 @@ if (userSelections[sender]?.step === "choose_service") {
     userSelections[sender] = { step: "choose_quantity", serviceKey };
 
     if (serviceKey === 10) {
-        await sock.sendMessage(sender, { text: "*ID FREE FIRE?*" });
-    } else if (serviceKey === 5) {
-        await sock.sendMessage(sender, { text: "layanan 5 kosong" });
+        await sock.sendMessage(sender, { text: "*Username TikTok?*" });
+    } else if (serviceKey === 11) {
+        await sock.sendMessage(sender, { text: "ID FREE FIRE?" });
     } else if (serviceKey === 6) {
         await sock.sendMessage(sender, { text: "layanan 6 kosong" });
     } else {
@@ -232,18 +235,20 @@ if (userSelections[sender]?.step === "choose_service") {
 // Jika pengguna memilih layanan 4 dan memasukkan ID Free Fire
 if (userSelections[sender]?.step === "choose_quantity") {
     if (userSelections[sender].serviceKey === 10) {
-        if (isNaN(text)) {
-            await sock.sendMessage(sender, { text: "*ID FREE FIRE WOII BUKAN USERNAME*" });
+        // Cek apakah input kosong atau hanya angka (username TikTok harus ada huruf)
+        if (!text || /^\d+$/.test(text)) { 
+            await sock.sendMessage(sender, { text: "*Masukkan Username TikTok yang Benar!*" });
             return;
         }
-        await stalkFreeFire(sock, sender, text); // Panggil fungsi dari ff.js
+
+        await stalkTiktok(sock, sender, text); // Panggil fungsi dari tt.js
         delete userSelections[sender];
         return;
     }
 
-    if (userSelections[sender].serviceKey === 5) {
+    if (userSelections[sender].serviceKey === 11) {
         if (isNaN(text)) {
-            await sock.sendMessage(sender, { text: "LAYANAN 5 KOSONG! Kembali ketik N" });
+            await sock.sendMessage(sender, { text: "*MASUKAN ID BUKAN USERNAME HMMM..*" });
             return;
         }
        await stalkFreeFire(sock, sender, text); // Panggil fungsi dari ff.js
@@ -391,4 +396,4 @@ function generateRandomIGSH() {
 
 // Jalankan bot
 connectToWhatsApp();
-                                                                                               
+            
