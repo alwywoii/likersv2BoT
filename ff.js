@@ -1,70 +1,60 @@
-require("dotenv").config();
 const axios = require("axios");
-const { default: makeWASocket, useMultiFileAuthState } = require("@whiskeysockets/baileys");
 
-async function startFFStalker() {
-    console.log("🚀 Stalker Free Fire berjalan...");
+async function stalkFreeFire(sock, sender, userID) {
+    await sock.sendMessage(sender, { text: `*Sedang diproses..*` });
 
-    // Inisialisasi WA Socket
-    const { state, saveCreds } = await useMultiFileAuthState("./auth");
-    const sock = makeWASocket({ auth: state });
+    try {
+        const response = await axios.get(`https://api.ryzendesu.vip/api/stalk/ff?userId=${userID}`);
+        const data = response.data;
 
-    sock.ev.on("creds.update", saveCreds);
-
-    sock.ev.on("messages.upsert", async ({ messages }) => {
-        const m = messages[0];
-        if (!m.message || !m.key.remoteJid) return;
-
-        const sender = m.key.remoteJid;
-        const messageText = m.message.conversation || m.message.extendedTextMessage?.text || "";
-
-        if (messageText.startsWith("!ff ")) {
-            const userId = messageText.split(" ")[1];
-
-            if (!userId) {
-                await sock.sendMessage(sender, { text: "❌ Harap masukkan ID Free Fire!\nContoh: *!ff 671022112*" });
-                return;
-            }
-
-            try {
-                await sock.sendMessage(sender, { text: "⏳ Sedang mencari data..." });
-
-                // Panggil API Stalker FF
-                const response = await axios.get(`https://api.ryzendesu.vip/api/stalk/ff?userId=${userId}`);
-                const data = response.data;
-
-                if (!data.name) {
-                    await sock.sendMessage(sender, { text: "❌ Data tidak ditemukan!" });
-                    return;
-                }
-
-                // Format hasilnya
-                const result = `🔥 *Stalker Free Fire* 🔥
-👤 *Nickname:* ${data.name}
-📖 *Bio:* ${data.bio || "Tidak ada"}
-👍 *Like:* ${data.like}
-🏆 *Level:* ${data.level}
-🎖️ *Rank Battle Royale:* ${data.brRank} (${data.brRankPoint})
-⚔️ *Rank Clash Squad:* ${data.csRankPoint}
-🌍 *Region:* ${data.region}
-🕰️ *Terakhir Login:* ${data.lastLogin}
-📅 *Akun Dibuat:* ${data.accountCreated}
-
-🔹 *Pet:* ${data.petInformation?.name || "Tidak ada"} (Level ${data.petInformation?.level})
-🛡️ *Preferensi Mode:* ${data.preferMode}
-🗣️ *Bahasa:* ${data.language}`;
-
-                await sock.sendMessage(sender, { text: result });
-
-            } catch (error) {
-                console.error("❌ Error mengambil data:", error);
-                await sock.sendMessage(sender, { text: "❌ Gagal mengambil data! Coba lagi nanti." });
-            }
+        if (!data || !data.name) {
+            await sock.sendMessage(sender, { text: "❌ Gagal menemukan akun Free Fire." });
+            return;
         }
-    });
 
-    console.log("✅ Stalker Free Fire siap digunakan!");
+        let message = `*🔍 DATA FREE FIRE*\n\n`;
+        message += `👤 *Nickname:* ${data.name}\n`;
+        message += `📝 *Bio:* ${data.bio || 'Tidak ada'}\n`;
+        message += `👍 *Like:* ${data.like}\n`;
+        message += `🎮 *Level:* ${data.level}\n`;
+        message += `⭐ *EXP:* ${data.exp}\n`;
+        message += `🌍 *Region:* ${data.region}\n`;
+        message += `🏅 *Honor Score:* ${data.honorScore}\n`;
+        message += `🏆 *BR Rank:* ${data.brRank}\n`;
+        message += `🔢 *BR Rank Point:* ${data.brRankPoint}\n`;
+        message += `📅 *Akun Dibuat:* ${data.accountCreated}\n`;
+        message += `⏰ *Login Terakhir:* ${data.lastLogin}\n`;
+        message += `🎯 *Mode Favorit:* ${data.preferMode}\n`;
+        message += `🗣️ *Bahasa:* ${data.language}\n`;
+        message += `💎 *Booyah Pass Premium:* ${data.booyahPassPremium}\n`;
+        message += `🎫 *Booyah Pass Level:* ${data.booyahPassLevel || 'N/A'}\n`;
+
+        if (data.petInformation) {
+            message += `\n*🐾 INFORMASI PET*\n`;
+            message += `🐶 *Nama Pet:* ${data.petInformation.name}\n`;
+            message += `🎚️ *Level Pet:* ${data.petInformation.level}\n`;
+            message += `⭐ *EXP Pet:* ${data.petInformation.exp}\n`;
+            message += `🌟 *Star Marked:* ${data.petInformation.starMarked}\n`;
+            message += `✅ *Selected:* ${data.petInformation.selected}\n`;
+        }
+
+        if (data.guild) {
+            message += `\n*🏰 INFORMASI GUILD*\n`;
+            message += `${data.guild}\n`;
+        }
+
+        if (data.equippedItems && data.equippedItems.length > 0) {
+            message += `\n*🎽 ITEM YANG DIPAKAI*\n`;
+            data.equippedItems.forEach(item => {
+                message += `- ${item.name}\n`;
+            });
+        }
+
+        await sock.sendMessage(sender, { text: message });
+    } catch (error) {
+        console.error("❌ Error stalking Free Fire:", error.message);
+        await sock.sendMessage(sender, { text: "*GAADA DATA YANG DI TEMUKAN!*\n\n_ulangi kembali ketik tombol *N* ke daftar layanan_" });
+    }
 }
 
-// Jalankan fungsi
-startFFStalker();
+module.exports = { stalkFreeFire };
